@@ -1,0 +1,21 @@
+name: solps-ftx
+dependencies:
+    - pip
+    - pip:
+        - ipsframework
+        - numpy
+        - h5py
+        - matplotlib
+        - netcdf4
+        - mpi4py
+        - scipy
+        - ../ips-iterative-xolotlFT
+        - ../../ips-solps-iter/src
+        - ../../ips-solps-iter/lib
+        - .
+variables:
+    ATOM_PERLMUTTER: /global/cfs/cdirs/atom/atom-install-perlmutter
+    ATOM_CORI: /project/projectdirs/atom/atom-install-cori
+    FTRIDYN_PATH: ${ATOM_PERLMUTTER}/fractal-tridyn    
+    GITR_PATH: ${ATOM_PERLMUTTER}/GITR
+    
