@@ -1,0 +1,110 @@
+[input_mode]
+hpic_mode = "pic"
+simulation_tag = "boltzmann_electrons_example"
+units = "si"
+
+[mesh]
+type = "uniform"
+    [mesh.type_specification]
+    x1_points = [0.0, 0.01]
+    x1_elem_size = 1.0e-4 # 100 cells
+
+[time]
+num_time_steps = 200
+dt = 2.0e-9
+
+[species]
+[species."e-"]
+type = "boltzmann"
+[species."e-".type_params]
+    temperature = 116045.0
+    charge_conservation_scheme = "hagelaar"
+
+[species."H+"]
+mass = 1.67262192369e-27
+type = "boris_buneman"
+[species."H+".type_params]
+    atomic_number = 1
+    initial_condition = "uniform_beam"
+    [species."H+".type_params.initial_condition_params]
+        num_particles = 100000
+        charge_states = [ { charge_number = 1, density = 1.0e17 } ]
+        flow_velocity_1 = 0.0
+        flow_velocity_2 = 0.0
+        flow_velocity_3 = 0.0
+        temperature = 116045.0
+    [[species."H+".type_params.boundary_conditions]]
+        boundary = "west"
+        type = "absorbing"
+    [[species."H+".type_params.boundary_conditions]]
+        boundary = "east"
+        type = "absorbing"
+    [[species."H+".type_params.volumetric_sources]]
+        type = "minimum_mass"
+        temperature = 116045.0
+
+[magnetic_field]
+type = "uniform"
+
+[magnetic_field.type_params]
+b1 = 0.0
+b2 = 0.0
+b3 = 0.0
+
+[electric_potential]
+poisson_solver = "hypre"
+
+[[electric_potential.boundary_conditions]]
+boundary = "west"
+type = "dirichlet"
+function = "constant"
+[electric_potential.boundary_conditions.function_params]
+value = 0.0
+
+[[electric_potential.boundary_conditions]]
+boundary = "east"
+type = "dirichlet"
+function = "constant"
+[electric_potential.boundary_conditions.function_params]
+value = 0.0
+
+[output_diagnostics]
+    output_dir = "boltzmann_electrons_example_out"
+
+    [output_diagnostics.logging]
+    log_level = true
+    timing_log_enabled = false
+
+    [output_diagnostics.particle_output]
+    stride = 0
+    species = ["H+"]
+
+    [output_diagnostics.moment_output]
+    stride = 5
+    species = ["H+", "e-"]
+    lab_frame_moment_exponents = [[0,0,0]]
+    rest_frame_moment_exponents = [[0,0,0]]
+
+    [output_diagnostics.iead_output]
+    stride = 5
+    first_step = false
+    final_step = true
+        [output_diagnostics.iead_output."H+"]
+        max_energy_te = 15
+        num_energy_bins = 200
+		num_angle_bins = 90
+
+    [output_diagnostics.field_output]
+    stride = 5
+
+    [[output_diagnostics.field_probes]]
+    stride = 1
+    tag = "midpoint_potential"
+    field = "phi"
+    x1 = 5.0e-3
+
+    [[output_diagnostics.field_probes]]
+    stride = 1
+    tag = "midpoint_B"
+    field = "B"
+    x1 = 5.0e-3
