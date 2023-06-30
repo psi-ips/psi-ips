@@ -1,0 +1,16 @@
+name: ftx
+dependencies:
+    - pip
+    - pip:
+        - ipsframework
+        - numpy
+        - h5py
+        - matplotlib
+        - .
+variables:
+    ATOM_CORI: /project/projectdirs/atom/atom-install-cori
+    #FTRIDYN_PATH: $ATOM_CORI/fractal-tridyn    
+    #GITR_PATH: $ATOM_CORI/GITR
+    ATOM_PERLMUTTER: /global/cfs/cdirs/atom/atom-install-perlmutter
+    FTRIDYN_PATH: $ATOM_PERLMUTTER/fractal-tridyn
+    GITR_PATH: $ATOM_PERLMUTTER/GITR
