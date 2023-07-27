@@ -1,0 +1,6 @@
+*dimens         (nx, ny, nx1, ny1; free format)
+     96     36     96     36
+*param          (param(0:99); free format)
+ -1.0, 99*0.0
+'b2agfs_min_pitch'    '0.01'
+'b2agfs_geometry'	'psielm_185266_v0.v001.geo'

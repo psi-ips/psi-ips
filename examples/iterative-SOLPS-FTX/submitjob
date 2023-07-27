@@ -1,0 +1,37 @@
+#!/bin/bash -l
+#SBATCH --account=atom
+#SBATCH --job-name=solps_ftx_job
+#SBATCH --qos=debug
+#SBATCH -C cpu
+#SBATCH --nodes=2
+#SBATCH --time=00:30:00
+#SBATCH --output=log.slurm.stdOut
+
+cd $SLURM_SUBMIT_DIR   # optional, since this is the default behavior
+
+#conda deactivate
+#source /global/common/software/nersc/pm-2022q3/sw/python/3.9-anaconda-2021.11/etc/profile.d/conda.sh #maybe optional?
+module load python/3.9-anaconda-2021.11
+conda activate /global/homes/a/a7l/.conda/envs/solps-ftx
+module load PrgEnv-cray cray-python
+
+#needed for SOLPS:
+#these could go in the env.ylm file too
+export PYTHONPATH=/global/cfs/cdirs/atom/users/a7l/ips-solps-iter/src:$PYTHONPATH
+export SOLPSTOP=/global/cfs/cdirs/atom/atom-install-perlmutter/SOLPS/solps-iter-3.0.8-master ## ask Jeremy about SOLPS version
+export B25_DATA_DIR=${SOLPSTOP}/modules/B2.5/Database
+export EIRENE_DATA_DIR=${SOLPSTOP}/modules/Eirene/Database
+export SOLPS_BIN_DIR=${SOLPSTOP}/modules/B2.5/builds/couple_SOLPS-ITER.NERSC.gfortran.mpi
+export SOLPS_SERIAL_BIN_DIR=${SOLPSTOP}/modules/B2.5/builds/couple_SOLPS-ITER.NERSC.gfortran
+export LD_LIBRARY_PATH=/global/cfs/cdirs/atom/atom-install-perlmutter/SOLPS/solps-libs/lib_gfortran/lib:$LD_LIBRARY_PATH
+module load PrgEnv-intel/6.0.5 intel # test without specific AL, 1.May.2023 /19.0.3.199
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/gcc/11.2.0/snos/lib64
+
+#export OMP_NUM_THREADS=32
+export OMP_PLACES=threads
+export OMP_PROC_BIND=spread
+
+ips.py --config=ips.parent.conf --platform=conf.ips.perlmutter --log=log.framework 2>>log.stdErr 1>>log.stdOut
+
+egrep -i 'error' log.* > log.errors
+./setPermissions.sh
