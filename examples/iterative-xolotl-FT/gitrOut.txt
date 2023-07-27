@@ -1,0 +1,5 @@
+plasmaSpecies=He W
+fluxFraction=1 0.00293159784018
+flux=5.4e+22
+plasmaOutputDir_W=GITRoutput/PISCES
+plasmaOutputDir_He=GITRoutput/PISCES
